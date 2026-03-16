@@ -1,0 +1,142 @@
+/* ===== Navbar ===== */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff8f0;
+    padding: 15px 24px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    border: 1px solid #f0e0cc;
+}
+
+/* -- Left Side -- */
+.navbar__left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.navbar__brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ff8c00;
+    text-decoration: none;
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.navbar__brand:hover {
+    color: #e07b00;
+}
+
+.navbar__links {
+    display: flex;
+    gap: 5px;
+}
+
+.navbar__link {
+    color: #444;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.navbar__link:hover {
+    color: #ff8c00;
+    background: rgba(255, 140, 0, 0.08);
+}
+
+/* -- Right Side -- */
+.navbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar__username {
+    color: #333;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.navbar__role {
+    color: #777;
+    font-size: 0.85rem;
+    margin-right: 8px;
+    padding: 3px 8px;
+    background: #f5f5f5;
+    border-radius: 4px;
+}
+
+/* -- Navbar Buttons -- */
+.navbar__btn {
+    padding: 8px 18px;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: inherit;
+    transition: background 0.2s;
+}
+
+.navbar__btn--login { background: #ff8c00; }
+.navbar__btn--login:hover { background: #e07b00; }
+
+.navbar__btn--register { background: #28a745; }
+.navbar__btn--register:hover { background: #219a38; }
+
+.navbar__btn--logout { background: #e74c3c; }
+.navbar__btn--logout:hover { background: #c0392b; }
+
+/* -- Cart Badge -- */
+.navbar__cart-link {
+    position: relative;
+    padding: 8px;
+    color: #444;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+    margin-right: 5px;
+}
+
+.navbar__cart-link:hover {
+    background: rgba(255, 140, 0, 0.08);
+    color: #ff8c00;
+}
+
+.navbar__cart-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #e74c3c;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff8f0;
+}
+
+
+/* -- Mobile -- */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 12px;
+        padding: 14px 16px;
+    }
+    .navbar__left { flex-direction: column; gap: 10px; }
+    .navbar__links { flex-wrap: wrap; justify-content: center; }
+    .navbar__actions { flex-wrap: wrap; justify-content: center; }
+}

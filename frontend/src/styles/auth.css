@@ -1,0 +1,73 @@
+/* ===== Auth Pages (Login & Register) ===== */
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #ff8c00;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.auth-title {
+    color: #222 !important;
+    font-size: 1.8rem !important;
+    margin: 0 !important;
+}
+
+.auth-subtitle {
+    color: #777;
+    margin-top: 6px;
+    font-size: 0.95rem;
+}
+
+/* -- Auth Button -- */
+.auth-btn-primary {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    background: #ff8c00;
+    border: none;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.3s;
+}
+
+.auth-btn-primary:hover {
+    background: #e07b00;
+}
+
+/* -- Auth Footer Link -- */
+.auth-footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.auth-link-btn {
+    background: none !important;
+    color: #ff8c00 !important;
+    padding: 5px !important;
+    box-shadow: none !important;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.auth-link-btn:hover {
+    color: #e07b00 !important;
+    text-decoration: underline;
+    background: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+}

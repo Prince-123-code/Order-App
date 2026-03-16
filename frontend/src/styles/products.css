@@ -1,0 +1,131 @@
+/* ===== Products Page ===== */
+
+/* -- Product Form -- */
+.product-form h3 { margin-bottom: 16px; }
+.product-form input { max-width: 100%; }
+
+/* -- Image Preview -- */
+.product-form__preview {
+    margin: 10px 0 15px;
+    padding: 12px;
+    background: #f8f8f8;
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+}
+
+.product-form__preview-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #777;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.product-form__preview img {
+    width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+/* -- Form Buttons -- */
+.product-form__actions { display: flex; gap: 10px; }
+.product-form__btn--cancel { background: #888 !important; }
+.product-form__btn--cancel:hover { background: #777 !important; }
+
+/* -- Product Card -- */
+.product-card { display: flex; flex-direction: column; }
+
+.product-card__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    transition: transform 0.3s;
+}
+
+.card:hover .product-card__image { transform: scale(1.03); }
+
+.product-card__price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ff8c00;
+    margin: 8px 0 4px;
+}
+
+.product-card__description {
+    color: #555;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* -- Action Buttons -- */
+.product-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 12px;
+}
+
+.product-actions button { flex: 1; }
+
+.product-btn--edit { background: #888 !important; }
+.product-btn--edit:hover { background: #777 !important; }
+
+.product-btn--delete { background: #e74c3c !important; }
+.product-btn--delete:hover { background: #c0392b !important; }
+
+.product-btn--order { background: #28a745 !important; width: 100%; }
+.product-btn--order:hover { background: #219a38 !important; }
+
+.product-btn--login-prompt { background: #ff8c00 !important; width: 100%; }
+.product-btn--login-prompt:hover { background: #e07b00 !important; }
+
+/* -- Search Bar -- */
+.search-container {
+    display: flex;
+    align-items: center;
+    margin: 25px 0;
+    max-width: 800px;
+    background: #fff;
+    border: 2px solid #eee;
+    border-radius: 50px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.search-container:focus-within {
+    border-color: #ff8c00;
+    box-shadow: 0 6px 18px rgba(255, 140, 0, 0.15);
+}
+
+.search-input {
+    flex: 1;
+    border: none !important;
+    padding: 12px 20px;
+    padding-right: 60px !important;
+    font-size: 1rem;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent;
+}
+
+.search-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: #ff8c00;
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: 0 2px 5px rgba(255, 140, 0, 0.3);
+}
+
