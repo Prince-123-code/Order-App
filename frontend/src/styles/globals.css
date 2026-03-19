@@ -13,7 +13,7 @@ body {
     background: #ffffff;
     color: #222222;
     min-height: 100vh;
-    padding: 2rem;
+    padding: 1rem; /* Reduced from 2rem for more space */
 }
 
 /* ===== Headings ===== */
@@ -39,8 +39,8 @@ small {
 
 /* ===== Page Layout ===== */
 .page-container {
-    max-width: 1000px;
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
 }
 
 /* ===== Grid ===== */

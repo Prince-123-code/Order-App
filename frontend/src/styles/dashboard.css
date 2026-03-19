@@ -34,7 +34,8 @@
 .dashboard-hero__text {
     position: relative;
     z-index: 2;
-    max-width: 800px;
+    width: 100%;
+    max-width: 1200px; /* Increased from 800px */
 }
 
 .hero-title {
@@ -200,12 +201,10 @@
 
 .featured-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive grid */
     gap: 30px;
     margin-top: 40px;
-    max-width: 1100px;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
 }
 
 .featured-product-card {
