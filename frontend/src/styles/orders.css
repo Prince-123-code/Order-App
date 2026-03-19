@@ -317,6 +317,56 @@
     margin-left: 4px;
 }
 
+.admin-status-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn-status-confirm, .btn-status-processing, .btn-status-delivered {
+    padding: 10px 18px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    color: #fff;
+}
+
+.btn-status-confirm { background: #4caf50; }
+.btn-status-confirm:hover { background: #43a047; transform: translateY(-2px); }
+
+.btn-status-processing { background: #1976d2; }
+.btn-status-processing:hover { background: #1565c0; transform: translateY(-2px); }
+
+.btn-status-delivered { background: #ff8c00; }
+.btn-status-delivered:hover { background: #e67e00; transform: translateY(-2px); }
+
+.btn-status-cancel {
+    background: #fffafa;
+    color: #e53935;
+    border: 1px solid #ffebee;
+    padding: 10px 18px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-status-cancel:hover { background: #e53935; color: #fff; border-color: #e53935; transform: translateY(-2px); }
+
+.status-badge-delivered, .status-badge-cancelled {
+    font-size: 0.85rem;
+    font-weight: 800;
+    padding: 8px 16px;
+    border-radius: 12px;
+}
+
+.status-badge-delivered { background: #e8f5e9; color: #2e7d32; }
+.status-badge-cancelled { background: #ffebee; color: #c62828; }
+
 .order-status-select {
     padding: 10px 18px;
     border-radius: 14px;

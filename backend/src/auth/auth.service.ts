@@ -1,20 +1,23 @@
-import { Injectable, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  InternalServerErrorException,
+  ConflictException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import * as bcrypt from "bcrypt";
+import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-
   constructor(
     private prisma: PrismaService,
-    private jwtService: JwtService
-  ) { }
+    private jwtService: JwtService,
+  ) {}
 
   async register(data: RegisterDto) {
-
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     try {
@@ -25,54 +28,42 @@ export class AuthService {
           password: hashedPassword,
         },
       });
-
       return {
-        message: "User created",
+        message: 'User created',
         user: {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role
+          role: user.role,
         },
       };
     } catch (e: any) {
-      // Prisma error when table does not exist
-      if (e?.code === 'P2021') {
-        throw new InternalServerErrorException(
-          'Database table not found. Did you run your migrations/push?'
-        );
+      if (e?.code === 'P2002') {
+        const field = e?.meta?.target?.includes('email') ? 'Email' : 'Name';
+        throw new ConflictException(`${field} already exists`);
       }
-      throw e; // rethrow other errors
+      throw e;
     }
   }
 
   async login(data: LoginDto) {
-
-    const user = await this.prisma.user.findUnique({
-      where: { name: data.name }
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [{ name: data.name }, { email: data.name }],
+      },
     });
 
-    if (!user) {
-      throw new UnauthorizedException("Invalid credentials");
+    if (!user || !(await bcrypt.compare(data.password, user.password))) {
+      throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isMatch = await bcrypt.compare(data.password, user.password);
-
-    if (!isMatch) {
-      throw new UnauthorizedException("Invalid credentials");
-    }
-
-    const token = this.jwtService.sign({
+    const access_token = this.jwtService.sign({
       userId: user.id,
       name: user.name,
       email: user.email,
-      role: user.role
+      role: user.role,
     });
 
-    return {
-      message: "Login success",
-      access_token: token
-    };
+    return { message: 'Login success', access_token };
   }
-
 }

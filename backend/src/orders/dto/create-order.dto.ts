@@ -15,7 +15,6 @@ class OrderItemDto {
 }
 
 export class CreateOrderDto {
-
   @ApiProperty({ example: 1, description: 'ID of the user placing the order' })
   @IsNotEmpty()
   @IsNumber()
@@ -26,5 +25,4 @@ export class CreateOrderDto {
   @ValidateNested({ each: true })
   @Type(() => OrderItemDto)
   items: OrderItemDto[];
-
 }

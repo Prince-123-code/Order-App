@@ -9,8 +9,42 @@ function Register() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [errors, setErrors] = useState({ name: "", email: "", password: "", general: "" });
+    const [success, setSuccess] = useState(false);
 
     const register = async () => {
+        // Reset errors
+        setErrors({ name: "", email: "", password: "", general: "" });
+
+        let hasError = false;
+        const newErrors = { name: "", email: "", password: "", general: "" };
+
+        if (!name.trim()) {
+            newErrors.name = "Name is required.";
+            hasError = true;
+        }
+
+        if (!email.trim()) {
+            newErrors.email = "Email is required.";
+            hasError = true;
+        } else if (!email.toLowerCase().endsWith("@gmail.com")) {
+            newErrors.email = "Please use a @gmail.com email address.";
+            hasError = true;
+        }
+
+        if (!password) {
+            newErrors.password = "Password is required.";
+            hasError = true;
+        } else if (password.length < 6) {
+            newErrors.password = "Password must be more than 5 characters long.";
+            hasError = true;
+        }
+
+        if (hasError) {
+            setErrors(newErrors);
+            return;
+        }
+
         try {
             await api.post("/auth/register", {
                 name,
@@ -18,11 +52,14 @@ function Register() {
                 password
             });
 
-            alert("User Registered!");
-            navigate("/login");
+            setSuccess(true);
+            setTimeout(() => {
+                navigate("/login");
+            }, 2000);
         } catch (error) {
             console.error("Registration error:", error);
-            alert(error.response?.data?.message || "Registration failed. Please check your details.");
+            const msg = error.response?.data?.message || "Registration failed. Please check your details.";
+            setErrors({ ...newErrors, general: msg });
         }
     };
 
@@ -42,23 +79,58 @@ function Register() {
                     <p className="auth-subtitle">Join us to start ordering products</p>
                 </div>
 
-                <input placeholder="Name"
-                    onChange={(e) => setName(e.target.value)} />
+                <div className="auth-input-group">
+                    <input
+                        placeholder="Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className={errors.name ? "input-error" : ""}
+                    />
+                    {errors.name && <span className="auth-error-text">⚠ {errors.name}</span>}
+                </div>
 
-                <input placeholder="Email"
-                    onChange={(e) => setEmail(e.target.value)} />
+                <div className="auth-input-group">
+                    <input
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className={errors.email ? "input-error" : ""}
+                    />
+                    {errors.email && <span className="auth-error-text">⚠ {errors.email}</span>}
+                </div>
 
-                <input type="password"
-                    placeholder="Password"
-                    onChange={(e) => setPassword(e.target.value)} />
+                <div className="auth-input-group">
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className={errors.password ? "input-error" : ""}
+                    />
+                    {errors.password && <span className="auth-error-text">⚠ {errors.password}</span>}
+                </div>
 
-                <button onClick={register} className="auth-btn-primary">Create Account</button>
+                {errors.general && <div className="auth-general-error">{errors.general}</div>}
+
+                <button onClick={register} className="auth-btn-primary" disabled={success}>
+                    {success ? "Success!" : "Create Account"}
+                </button>
 
                 <div className="auth-footer">
                     <small>Already have an account?</small>
                     <button onClick={() => navigate("/login")} className="auth-link-btn">Login</button>
                 </div>
             </div>
+
+            {success && (
+                <div className="auth-success-backdrop">
+                    <div className="auth-success-popup">
+                        <div className="auth-success-icon">✓</div>
+                        <div className="auth-success-text">Registered successfully</div>
+                        <div className="auth-success-subtext">Redirecting to login...</div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

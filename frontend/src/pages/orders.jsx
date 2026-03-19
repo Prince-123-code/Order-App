@@ -1,28 +1,49 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import Navbar from "../components/navbar";
 
 function Orders() {
-
+    const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
     const role = localStorage.getItem("role");
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 12;
+    const ordersHeaderRef = useRef(null);
+    const isFirstRender = useRef(true);
 
 
     useEffect(() => {
         fetchOrders();
-        fetchProducts();
-    }, []);
+    }, [page]);
+
+    useEffect(() => {
+        // Scroll to top when page changes (skip first render)
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+        if (ordersHeaderRef.current) {
+            ordersHeaderRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [page]);
 
     const fetchOrders = async () => {
-        const res = await api.get("/orders");
-        setOrders(res.data);
+        setLoading(true);
+        try {
+            const res = await api.get(`/orders?page=${page}&limit=${limit}`);
+            setOrders(res.data.data);
+            setTotalPages(res.data.meta.lastPage);
+        } catch (error) {
+            console.error("Failed to fetch orders", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const fetchProducts = async () => {
-        const res = await api.get("/products");
-        setProducts(res.data);
-    };
 
     const getUserId = () => {
         const token = localStorage.getItem("token");
@@ -37,8 +58,13 @@ function Orders() {
 
     const updateOrderStatus = async (orderId, newStatus) => {
         try {
-            await api.post(`/orders/${orderId}/status`, { status: newStatus });
-            fetchOrders();
+            const res = await api.put(`/orders/${orderId}/status`, { status: newStatus });
+            const updatedOrder = res.data;
+            
+            // Update the local state directly for immediate UI feedback
+            setOrders(prev => prev.map(order => 
+                order.id === orderId ? { ...order, ...updatedOrder } : order
+            ));
         } catch (error) {
             console.error("Failed to update status", error);
             alert("Failed to update order status");
@@ -48,8 +74,13 @@ function Orders() {
     const cancelOrder = async (orderId) => {
         if (!window.confirm("Are you sure you want to cancel this order?")) return;
         try {
-            await api.delete(`/orders/${orderId}`);
-            fetchOrders();
+            const res = await api.delete(`/orders/${orderId}`);
+            const cancelledOrder = res.data;
+
+            // Update local state directly
+            setOrders(prev => prev.map(order => 
+                order.id === orderId ? { ...order, ...cancelledOrder } : order
+            ));
         } catch (error) {
             console.error("Failed to cancel order", error);
             alert("Failed to cancel order");
@@ -57,11 +88,11 @@ function Orders() {
     };
 
     const getStatusClass = (status) => {
-        return (status || 'ORDER_ITEMS').toLowerCase();
+        return (status || 'PENDING').toLowerCase();
     };
 
     const OrderStatusTimeline = ({ currentStatus }) => {
-        const statuses = ['ORDER_ITEMS', 'CONFIRMED', 'PROCESSING', 'DELIVERED'];
+        const statuses = ['PENDING', 'CONFIRMED', 'PROCESSING', 'DELIVERED'];
         const isCancelled = currentStatus === 'CANCELLED';
         const currentIndex = statuses.indexOf(currentStatus);
         
@@ -101,7 +132,7 @@ function Orders() {
     return (
         <div className="page-container">
             <Navbar />
-            <div className="orders-page-header">
+            <div className="orders-page-header" ref={ordersHeaderRef}>
                 <h2>{role === "ADMIN" ? "Manage All Orders" : "Your Order History"}</h2>
                 <p className="orders-page-subtitle">Track your culinary journey from our kitchen to your table.</p>
             </div>
@@ -132,7 +163,7 @@ function Orders() {
                         </div>
 
                         <div className="order-card-v3__status-section">
-                            <OrderStatusTimeline currentStatus={o.status || 'ORDER_ITEMS'} />
+                            <OrderStatusTimeline currentStatus={o.status || 'PENDING'} />
                         </div>
 
                         <div className="order-card-v3__content">
@@ -147,26 +178,35 @@ function Orders() {
                             <div className="order-card-v3__actions">
                                 {role === "ADMIN" ? (
                                     <div className="admin-status-wrapper">
-                                        <span className="admin-status-label">Update Status:</span>
-                                        <select 
-                                            value={o.status || 'ORDER_ITEMS'} 
-                                            onChange={(e) => updateOrderStatus(o.id, e.target.value)}
-                                            className="order-status-select"
-                                            disabled={o.status === 'CANCELLED' || o.status === 'DELIVERED'}
-                                        >
-                                            <option value="ORDER_ITEMS">Order Items</option>
-                                            <option value="CONFIRMED">Confirm Order</option>
-                                            <option value="PROCESSING">Send to Processing</option>
-                                            <option value="DELIVERED">Mark Delivered</option>
-                                            <option value="CANCELLED">Cancel Order</option>
-                                        </select>
+                                        <span className="admin-status-label">Manage Order:</span>
+                                        <div className="admin-status-buttons">
+                                            {o.status === 'PENDING' && (
+                                                <>
+                                                    <button onClick={() => updateOrderStatus(o.id, 'CONFIRMED')} className="btn-status-confirm">Confirm Order</button>
+                                                    <button onClick={() => cancelOrder(o.id)} className="btn-status-cancel">Cancel Order</button>
+                                                </>
+                                            )}
+                                            {o.status === 'CONFIRMED' && (
+                                                <>
+                                                    <button onClick={() => updateOrderStatus(o.id, 'PROCESSING')} className="btn-status-processing">Send to Processing</button>
+                                                    <button onClick={() => cancelOrder(o.id)} className="btn-status-cancel">Cancel Order</button>
+                                                </>
+                                            )}
+                                            {o.status === 'PROCESSING' && (
+                                                <>
+                                                    <button onClick={() => updateOrderStatus(o.id, 'DELIVERED')} className="btn-status-delivered">Mark Delivered</button>
+                                                </>
+                                            )}
+                                            {o.status === 'DELIVERED' && <span className="status-badge-delivered">Order Delivered</span>}
+                                            {o.status === 'CANCELLED' && <span className="status-badge-cancelled">Order Cancelled</span>}
+                                        </div>
                                     </div>
                                 ) : (
                                     <button
                                         className="order-card-v3__btn-cancel"
                                         onClick={() => cancelOrder(o.id)}
-                                        disabled={o.status !== 'ORDER_ITEMS'}
-                                        title={o.status !== 'ORDER_ITEMS' ? "Cannot cancel once order is confirmed" : "Cancel this order"}
+                                        disabled={o.status !== 'PENDING'}
+                                        title={o.status !== 'PENDING' ? "Cannot cancel once order is confirmed" : "Cancel this order"}
                                     >
                                         ❌ Cancel Order
                                     </button>
@@ -176,7 +216,7 @@ function Orders() {
                     </div>
                 ))}
 
-                {orders.length === 0 && (
+                {!loading && orders.length === 0 && (
                     <div className="empty-orders-message">
                         <div className="empty-orders-icon">📦</div>
                         <h3>No orders yet</h3>
@@ -185,6 +225,38 @@ function Orders() {
                     </div>
                 )}
             </div>
+
+            {totalPages > 1 && (
+                <div className="pagination-v3">
+                    <button 
+                        className="pagination-btn" 
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                    >
+                        &laquo; Previous
+                    </button>
+                    
+                    <div className="pagination-pages">
+                        {[...Array(totalPages)].map((_, i) => (
+                            <button 
+                                key={i + 1}
+                                className={`pagination-page ${page === i + 1 ? 'active' : ''}`}
+                                onClick={() => setPage(i + 1)}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
+                    </div>
+
+                    <button 
+                        className="pagination-btn" 
+                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
+                    >
+                        Next &raquo;
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

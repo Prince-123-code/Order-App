@@ -2,21 +2,25 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import "dotenv/config"; 
+import 'dotenv/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors();
 
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-    transform: true,
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+    }),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('API Documentation')
-    .setDescription('Complete REST API documentation for Users, Auth, Products, Orders, and Order Items')
+    .setDescription(
+      'Complete REST API documentation for Users, Auth, Products, Orders, and Order Items',
+    )
     .setVersion('1.0')
     .addBearerAuth(
       {

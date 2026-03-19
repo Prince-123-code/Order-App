@@ -71,3 +71,105 @@
     box-shadow: none !important;
     transform: none !important;
 }
+
+/* -- Validation Styles -- */
+.auth-input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.auth-input-group input {
+    margin-bottom: 5px !important;
+}
+
+.auth-error-text {
+    color: #e53935;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 4px;
+    display: block;
+}
+
+.input-error {
+    border-color: #e53935 !important;
+}
+
+.input-error:focus {
+    box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.15) !important;
+}
+
+.auth-general-error {
+    background: #ffebee;
+    color: #c62828;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 1px solid #ffcdd2;
+}
+
+/* -- Success Modal & Backdrop -- */
+.auth-success-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Dimmed backdrop */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    animation: auth-fade-in 0.3s ease-out;
+}
+
+.auth-success-popup {
+    background: #ffffff; /* White background */
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    animation: auth-modal-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: none;
+    margin: 0; /* Centered by flex parent */
+}
+
+.auth-success-icon {
+    font-size: 4rem;
+    color: #4caf50;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 10px rgba(76, 175, 80, 0.3));
+}
+
+.auth-success-text {
+    font-weight: 800;
+    color: #222;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.auth-success-subtext {
+    font-size: 1rem;
+    color: #666;
+}
+
+@keyframes auth-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes auth-modal-pop {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+
+.auth-btn-primary:disabled {
+    background: #4caf50;
+    cursor: default;
+}

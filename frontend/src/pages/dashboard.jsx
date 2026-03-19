@@ -6,16 +6,28 @@ import api from "../services/api";
 function Dashboard() {
     const role = localStorage.getItem("role");
     const [stats, setStats] = useState({ products: 0, orders: 0 });
+    const [featuredProducts, setFeaturedProducts] = useState([]);
 
     useEffect(() => {
+        const fetchFeatured = async () => {
+            try {
+                const res = await api.get("/products/top-selling");
+                setFeaturedProducts(res.data);
+            } catch (e) {
+                console.error("Failed to fetch top selling products", e);
+            }
+        };
+
+        fetchFeatured();
+
         if (role === 'ADMIN') {
             const fetchStats = async () => {
                 try {
-                    const [pRes, oRes] = await Promise.all([
-                        api.get("/products"),
-                        api.get("/orders")
-                    ]);
-                    setStats({ products: pRes.data.length, orders: oRes.data.length });
+                    const res = await api.get("/orders/analytics/stats");
+                    setStats({ 
+                        products: res.data.productsCount, 
+                        orders: res.data.ordersCount 
+                    });
                 } catch (e) {
                     console.error("Failed to fetch stats", e);
                 }
@@ -23,11 +35,13 @@ function Dashboard() {
             fetchStats();
         }
     }, [role]);
+
+
     return (
         <div className="page-container">
             <Navbar />
             <h2>Dashboard</h2>
-            
+
             <div className="dashboard-content">
                 {role === 'ADMIN' && (
                     <section className="admin-stats-bar">
@@ -54,7 +68,7 @@ function Dashboard() {
                 </section>
 
                 <section className="dashboard-specialties">
-                    <h2 className="section-title">Our Specialties</h2>
+                    <h2 className="section-title">Our Specials</h2>
                     <div className="specialties-grid">
                         <div className="specialty-card">
                             <div className="specialty-icon breakfast-icon">🍳</div>
@@ -72,6 +86,33 @@ function Dashboard() {
                             <p>Exquisite evening meals prepared by our world-class chefs.</p>
                         </div>
                     </div>
+                </section>
+
+                <section className="featured-products-section">
+                    <h2 className="section-title">Top Featuring Products</h2>
+                    <p className="section-subtitle">Discover our most popular items</p>
+                    <div className="featured-grid">
+                        {featuredProducts.map(product => (
+                            <div key={product.id} className="featured-product-card">
+                                <div className="product-image-container">
+                                    <img src={product.image || "https://via.placeholder.com/300x200?text=No+Image"} alt={product.name} />
+                                    <span className={`category-badge ${product.category?.toLowerCase() || 'veg'}`}>
+                                        {product.category === 'NON-VEG' ? 'Non-Veg' : 'Veg'}
+                                    </span>
+                                </div>
+                                <div className="product-info">
+                                    <h3>{product.name}</h3>
+                                    <p className="product-price">${product.price}</p>
+                                    <div className="featured-actions">
+                                        <button onClick={() => window.location.href = '/products'} className="btn-view-details">
+                                            View Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    {featuredProducts.length === 0 && <p className="no-products-msg">No trending products available yet.</p>}
                 </section>
 
             </div>

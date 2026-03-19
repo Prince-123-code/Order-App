@@ -4,17 +4,18 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:Prince%40005.@localhost:3307/websitedb"
+  url      = env("DATABASE_URL")
 }
 
 model Order {
   id        Int         @id @default(autoincrement())
   userId    Int
   createdAt DateTime    @default(now())
-  status    OrderStatus @default(ORDER_ITEMS)
+  status    OrderStatus @default(PENDING)
   user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
 
+  @@index([userId])
   @@map("order")
 }
 
@@ -26,6 +27,8 @@ model OrderItem {
   order     Order   @relation(fields: [orderId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
 
+  @@index([orderId])
+  @@index([productId])
   @@map("orderitem")
 }
 
@@ -34,25 +37,27 @@ model Product {
   name        String
   price       Float
   description String?
-  image       String?
+  image       String?     @db.Text
+  category    String      @default("VEG")
+  deleted     Boolean     @default(false)
   items       OrderItem[]
 
   @@map("product")
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  name     String   @unique
-  email    String   @unique
+  id       Int     @id @default(autoincrement())
+  name     String  @unique
+  email    String  @unique
   password String
-  role     Role     @default(USER)
+  role     Role    @default(USER)
   orders   Order[]
 
   @@map("user")
 }
 
 enum OrderStatus {
-  ORDER_ITEMS
+  PENDING
   CONFIRMED
   PROCESSING
   DELIVERED

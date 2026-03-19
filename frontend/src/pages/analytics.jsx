@@ -30,9 +30,9 @@ function Analytics() {
     );
 
     return (
-        <div className="analytics-container">
+        <div className="page-container">
             <Navbar />
-            <div className="analytics-content">
+            <div className="analytics-page">
                 <header className="analytics-header">
                     <h1>Business Analytics</h1>
                     <p>Track your business growth and performance metrics</p>

@@ -3,12 +3,11 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class OrderItemsService {
-
   constructor(private prisma: PrismaService) {}
 
   create(data: any) {
     return this.prisma.orderItem.create({
-      data
+      data,
     });
   }
 
@@ -16,8 +15,8 @@ export class OrderItemsService {
     return this.prisma.orderItem.findMany({
       include: {
         order: true,
-        product: true
-      }
+        product: true,
+      },
     });
   }
 
@@ -26,15 +25,14 @@ export class OrderItemsService {
       where: { id },
       include: {
         order: true,
-        product: true
-      }
+        product: true,
+      },
     });
   }
 
   delete(id: number) {
     return this.prisma.orderItem.delete({
-      where: { id }
+      where: { id },
     });
   }
-
 }

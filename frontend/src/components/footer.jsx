@@ -22,7 +22,7 @@ function Footer() {
                     <h3>Contact Us</h3>
                     <p>Email: support@appmart.com</p>
                     <p>Phone: +1 (555) 123-4567</p>
-                </div>
+                </div>                                    
             </div>
             <div className="footer-bottom">
                 <p>&copy; {new Date().getFullYear()} AppMart. All rights reserved.</p>

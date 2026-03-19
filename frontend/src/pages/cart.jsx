@@ -2,9 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import api from "../services/api";
 import Navbar from "../components/navbar";
+import { useToast } from "../context/ToastContext";
 
-function Cart() {
+const Cart = () => {
     const { cartItems, removeFromCart, updateQuantity, clearCart, cartTotal } = useCart();
+    const { showToast } = useToast();
     const navigate = useNavigate();
 
     const getUserId = () => {
@@ -21,16 +23,23 @@ function Cart() {
     const handlePlaceOrder = async () => {
         if (cartItems.length === 0) return alert("Your cart is empty");
         
+        const userId = getUserId();
+        if (!userId) {
+            alert("Unexpected error: User not logged in or token invalid. Please log in again.");
+            navigate("/login");
+            return;
+        }
+
         try {
             await api.post("/orders", {
-                userId: getUserId(),
+                userId: Number(userId),
                 items: cartItems.map(item => ({
-                    productId: item.id,
-                    quantity: item.quantity
+                    productId: Number(item.id),
+                    quantity: Number(item.quantity)
                 }))
             });
             clearCart();
-            alert("Order placed successfully!");
+            showToast("Order placed successfully!", "success");
             navigate("/orders");
         } catch (error) {
             console.error("Failed to place order", error);
@@ -59,9 +68,16 @@ function Cart() {
                         <div className="cart-list">
                             {cartItems.map(item => (
                                 <div key={item.id} className="card cart-item">
-                                    <div className="cart-item__info">
-                                        <h3>{item.name}</h3>
-                                        <p className="cart-item__price">${item.price} each</p>
+                                    <div className="cart-item__main">
+                                        {item.image && (
+                                            <div className="cart-item__image-container">
+                                                <img src={item.image} alt={item.name} className="cart-item__image" />
+                                            </div>
+                                        )}
+                                        <div className="cart-item__info">
+                                            <h3>{item.name}</h3>
+                                            <p className="cart-item__price">${item.price} each</p>
+                                        </div>
                                     </div>
                                     <div className="cart-item__actions">
                                         <div className="quantity-controls">

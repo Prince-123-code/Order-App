@@ -8,8 +8,29 @@ function Login() {
 
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
+    const [errors, setErrors] = useState({ name: "", password: "", general: "" });
 
     const login = async () => {
+        setErrors({ name: "", password: "", general: "" });
+        
+        let hasError = false;
+        const newErrors = { name: "", password: "", general: "" };
+
+        if (!name.trim()) {
+            newErrors.name = "Name is required.";
+            hasError = true;
+        }
+
+        if (!password) {
+            newErrors.password = "Password is required.";
+            hasError = true;
+        }
+
+        if (hasError) {
+            setErrors(newErrors);
+            return;
+        }
+
         try {
 
             const res = await api.post("/auth/login", {
@@ -18,7 +39,7 @@ function Login() {
             });
 
             localStorage.setItem("token", res.data.access_token);
-            
+
             const token = res.data.access_token;
             const payload = JSON.parse(atob(token.split('.')[1]));
             localStorage.setItem("role", payload.role);
@@ -27,7 +48,9 @@ function Login() {
             navigate("/dashboard");
 
         } catch (err) {
-            alert("Login failed");
+            console.error("Login failed:", err);
+            const msg = err.response?.data?.message || "Login failed. Please check your credentials.";
+            setErrors({ ...newErrors, general: msg });
         }
     };
 
@@ -47,13 +70,28 @@ function Login() {
                     <p className="auth-subtitle">Login to access your dashboard</p>
                 </div>
 
-                <input placeholder="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)} />
+                <div className="auth-input-group">
+                    <input 
+                        placeholder="Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className={errors.name ? "input-error" : ""}
+                    />
+                    {errors.name && <span className="auth-error-text">⚠ {errors.name}</span>}
+                </div>
 
-                <input type="password"
-                    placeholder="Password"
-                    onChange={(e) => setPassword(e.target.value)} />
+                <div className="auth-input-group">
+                    <input 
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className={errors.password ? "input-error" : ""}
+                    />
+                    {errors.password && <span className="auth-error-text">⚠ {errors.password}</span>}
+                </div>
+
+                {errors.general && <div className="auth-general-error">{errors.general}</div>}
 
                 <button onClick={login} className="auth-btn-primary">Login</button>
 

@@ -1,12 +1,5 @@
-.analytics-container {
-    min-height: 100vh;
-    background-color: #f8fafc;
-}
-
-.analytics-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
+.analytics-page {
+    padding: 20px 0;
 }
 
 .analytics-header {

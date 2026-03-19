@@ -4,7 +4,7 @@ import { OrdersService } from './orders.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Module({
-  controllers:[OrdersController],
-  providers:[OrdersService,PrismaService]
+  controllers: [OrdersController],
+  providers: [OrdersService, PrismaService],
 })
 export class OrdersModule {}
