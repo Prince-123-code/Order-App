@@ -2,7 +2,7 @@
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "/dashboard"
+            "dest": "/index.html"
         }
     ]
 }
