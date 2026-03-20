@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -38,7 +38,7 @@ model Product {
   name        String
   price       Float
   description String?
-  image       String?     @db.Text
+  image       String?
   category    String      @default("VEG")
   deleted     Boolean     @default(false)
   items       OrderItem[]

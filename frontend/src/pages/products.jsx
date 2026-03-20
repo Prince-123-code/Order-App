@@ -119,8 +119,8 @@ function Products() {
             await api.post("/products", {
                 name,
                 price: parseFloat(price),
-                description: description || undefined,
-                image: (image && imageValid) ? image : undefined,
+                description: description,
+                image: image,
                 category
             });
             resetForm();
@@ -150,8 +150,8 @@ function Products() {
             await api.put(`/products/${editId}`, {
                 name,
                 price: parseFloat(price),
-                description: description || undefined,
-                image: (image && imageValid) ? image : undefined,
+                description: description,
+                image: image,
                 category
             });
             resetForm();

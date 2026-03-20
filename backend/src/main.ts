@@ -1,13 +1,15 @@
+import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import 'dotenv/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors();
+  console.log('JWT_SECRET_KEY length:', process.env.JWT_SECRET_KEY?.length || 0);
+  console.log('Database URL:', process.env.DATABASE_URL?.substring(0, 20) + '...');
 
   app.useGlobalPipes(
     new ValidationPipe({

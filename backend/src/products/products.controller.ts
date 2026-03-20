@@ -43,7 +43,13 @@ export class ProductsController {
   @ApiResponse({ status: 400, description: 'Validation error' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   create(@Body() body: CreateProductDto) {
-    return this.productsService.create(body);
+    console.log('Creating product with body:', body);
+    try {
+      return this.productsService.create(body);
+    } catch (error) {
+      console.error('Error creating product:', error);
+      throw error;
+    }
   }
 
   @Public()
