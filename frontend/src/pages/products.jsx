@@ -335,48 +335,56 @@ function Products() {
                 </div>
             </div>
 
-            <div className="grid">
-                {products.map((p) => (
-                    <div key={p.id} className="card product-card">
-                        <div className="product-card__header">
-                            {p.image && <img src={p.image} alt={p.name} className="product-card__image" />}
-                            <span className={`category-badge ${p.category?.toLowerCase() || 'veg'}`}>
-                                {p.category === 'NON-VEG' ? 'Non-Veg' : 'Veg'}
-                            </span>
-                        </div>
-                        <div className="product-info-wrap">
-                            <h3>{p.name}</h3>
-                            <p className="product-card__price">
-                                ${p.price}
-                            </p>
-                            {p.description && <p className="product-card__description">{p.description}</p>}
+            {loading ? (
+                <div style={{ textAlign: 'center', padding: '80px 0' }}>
+                    <div style={{ width: '40px', height: '40px', border: '4px solid #f0f0f0', borderTop: '4px solid #ff8c00', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 15px' }}></div>
+                    <p style={{ color: '#888', fontWeight: '600' }}>Loading products...</p>
+                    <style>{"@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }"}</style>
+                </div>
+            ) : (
+                <div className="grid">
+                    {products.map((p) => (
+                        <div key={p.id} className="card product-card">
+                            <div className="product-card__header">
+                                {p.image && <img src={p.image} alt={p.name} className="product-card__image" />}
+                                <span className={`category-badge ${p.category?.toLowerCase() || 'veg'}`}>
+                                    {p.category === 'NON-VEG' ? 'Non-Veg' : 'Veg'}
+                                </span>
+                            </div>
+                            <div className="product-info-wrap">
+                                <h3>{p.name}</h3>
+                                <p className="product-card__price">
+                                    ${p.price}
+                                </p>
+                                {p.description && <p className="product-card__description">{p.description}</p>}
 
-                            {role === "ADMIN" ? (
-                                <div className="product-actions">
-                                    <button onClick={() => editProduct(p)} className="product-btn--edit">Edit</button>
-                                    <button onClick={() => deleteProduct(p.id)} className="product-btn--delete">Delete</button>
-                                </div>
-                            ) : (
-                                <div className="product-actions">
-                                    {role === "USER" ? (
-                                        <button 
-                                            onClick={() => {
-                                                addToCart(p);
-                                                navigate('/cart');
-                                            }} 
-                                            className="product-btn--order"
-                                        >
-                                            Add to Cart
-                                        </button>
-                                    ) : (
-                                        <button onClick={() => window.location.href = '/login'} className="product-btn--login-prompt">Login to Order</button>
-                                    )}
-                                </div>
-                            )}
+                                {role === "ADMIN" ? (
+                                    <div className="product-actions">
+                                        <button onClick={() => editProduct(p)} className="product-btn--edit">Edit</button>
+                                        <button onClick={() => deleteProduct(p.id)} className="product-btn--delete">Delete</button>
+                                    </div>
+                                ) : (
+                                    <div className="product-actions">
+                                        {role === "USER" ? (
+                                            <button 
+                                                onClick={() => {
+                                                    addToCart(p);
+                                                    navigate('/cart');
+                                                }} 
+                                                className="product-btn--order"
+                                            >
+                                                Add to Cart
+                                            </button>
+                                        ) : (
+                                            <button onClick={() => window.location.href = '/login'} className="product-btn--login-prompt">Login to Order</button>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            )}
 
             {totalPages > 1 && (
                 <div className="pagination-v3">

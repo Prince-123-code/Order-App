@@ -166,10 +166,17 @@ function Orders() {
                 <p className="orders-page-subtitle">Track your culinary journey from our kitchen to your table.</p>
             </div>
 
-            <div className="order-history-list">
-                {orders.map((o) => (
-                    <div key={o.id} className="order-card-v3">
-                        <div className="order-card-v3__header">
+            {loading ? (
+                <div style={{ textAlign: 'center', padding: '80px 0' }}>
+                    <div style={{ width: '40px', height: '40px', border: '4px solid #f0f0f0', borderTop: '4px solid #ff8c00', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 15px' }}></div>
+                    <p style={{ color: '#888', fontWeight: '600' }}>Loading orders...</p>
+                    <style>{"@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }"}</style>
+                </div>
+            ) : (
+                <div className="order-history-list">
+                    {orders.map((o) => (
+                        <div key={o.id} className="order-card-v3">
+                            <div className="order-card-v3__header">
                             <div className="order-card-v3__id-group">
                                 <h3>Order #{o.id}</h3>
                                 <span className="order-card-v3__date">
@@ -254,6 +261,7 @@ function Orders() {
                     </div>
                 )}
             </div>
+            )}
 
             {totalPages > 1 && (
                 <div className="pagination-v3">
