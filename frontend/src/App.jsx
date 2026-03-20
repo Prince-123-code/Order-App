@@ -28,12 +28,12 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/cart" element={
-              <ProtectedRoute>
+              <ProtectedRoute userOnly>
                 <Cart />
               </ProtectedRoute>
             } />
             <Route path="/analytics" element={
-              <ProtectedRoute>
+              <ProtectedRoute adminOnly>
                 <Analytics />
               </ProtectedRoute>
             } />
