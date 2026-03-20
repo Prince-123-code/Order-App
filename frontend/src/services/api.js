@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:8081"
+    baseURL: " https://order-app-utuk.onrender.com"
 });
 
 api.interceptors.request.use((config) => {
