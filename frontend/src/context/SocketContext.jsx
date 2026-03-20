@@ -8,7 +8,7 @@ export function SocketProvider({ children }) {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        const s = io("http://localhost:8081", {
+        const s = io("https://order-app-utuk.onrender.com", {
             transports: ["websocket"],
             autoConnect: true,
         });
