@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { OrderStatus, Role } from '@prisma/client';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { EventsGateway } from '../events/events.gateway';
 
 interface UserPayload {
   userId: number;
@@ -12,10 +13,13 @@ interface UserPayload {
 
 @Injectable()
 export class OrdersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private eventsGateway: EventsGateway,
+  ) {}
 
   async create(data: any) {
-    return await this.prisma.order.create({
+    const order = await this.prisma.order.create({
       data: {
         userId: Number(data.userId),
         items: {
@@ -26,11 +30,14 @@ export class OrdersService {
         },
       },
       include: {
+        user: true,
         items: {
           include: { product: true },
         },
       },
     });
+    this.eventsGateway.emitOrderCreated(order);
+    return order;
   }
 
   findAllWithContext(user: UserPayload, page: number = 1, limit: number = 12) {
@@ -114,7 +121,7 @@ export class OrdersService {
       );
     }
 
-    return await this.prisma.order.update({
+    const updated = await this.prisma.order.update({
       where: { id },
       data: { status: targetStatus },
       include: {
@@ -124,6 +131,8 @@ export class OrdersService {
         },
       },
     });
+    this.eventsGateway.emitOrderStatusUpdated(updated);
+    return updated;
   }
 
   async cancelOrder(id: number, user: UserPayload) {

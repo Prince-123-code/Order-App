@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import Navbar from "../components/navbar";
+import { useSocket } from "../context/SocketContext";
 
 function Orders() {
     const navigate = useNavigate();
@@ -14,11 +15,39 @@ function Orders() {
     const limit = 12;
     const ordersHeaderRef = useRef(null);
     const isFirstRender = useRef(true);
+    const socket = useSocket();
 
 
     useEffect(() => {
         fetchOrders();
     }, [page]);
+
+    // Real-time WebSocket listeners
+    useEffect(() => {
+        if (!socket) return;
+
+        // Admin: new order placed by any user → prepend to list
+        const handleOrderCreated = (newOrder) => {
+            if (role === "ADMIN") {
+                setOrders(prev => [newOrder, ...prev]);
+            }
+        };
+
+        // Both roles: status changed → update matching order in-place
+        const handleOrderStatusUpdated = (updatedOrder) => {
+            setOrders(prev =>
+                prev.map(o => o.id === updatedOrder.id ? { ...o, ...updatedOrder } : o)
+            );
+        };
+
+        socket.on("order:created", handleOrderCreated);
+        socket.on("order:statusUpdated", handleOrderStatusUpdated);
+
+        return () => {
+            socket.off("order:created", handleOrderCreated);
+            socket.off("order:statusUpdated", handleOrderStatusUpdated);
+        };
+    }, [socket, role]);
 
     useEffect(() => {
         // Scroll to top when page changes (skip first render)

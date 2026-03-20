@@ -9,15 +9,17 @@ import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { OrderItemsModule } from './order-items/order-items.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
-    PrismaModule, // ensure PrismaService is registered globally
+    PrismaModule,
     AuthModule,
     UsersModule,
     ProductsModule,
     OrdersModule,
     OrderItemsModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [

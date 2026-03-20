@@ -89,30 +89,51 @@ function Dashboard() {
                 </section>
 
                 <section className="featured-products-section">
-                    <h2 className="section-title">Top Featuring Products</h2>
-                    <p className="section-subtitle">Discover our most popular items</p>
-                    <div className="featured-grid">
-                        {featuredProducts.map(product => (
-                            <div key={product.id} className="featured-product-card">
-                                <div className="product-image-container">
-                                    <img src={product.image || "https://via.placeholder.com/300x200?text=No+Image"} alt={product.name} />
-                                    <span className={`category-badge ${product.category?.toLowerCase() || 'veg'}`}>
-                                        {product.category === 'NON-VEG' ? 'Non-Veg' : 'Veg'}
-                                    </span>
-                                </div>
-                                <div className="product-info">
-                                    <h3>{product.name}</h3>
-                                    <p className="product-price">${product.price}</p>
-                                    <div className="featured-actions">
-                                        <button onClick={() => window.location.href = '/products'} className="btn-view-details">
-                                            View Details
-                                        </button>
+                    <div className="section-header">
+                        <h2 className="section-title">⭐ Top Featured Products</h2>
+                        <p className="section-subtitle">Our best-sellers based on real customer orders</p>
+                    </div>
+                    <div className="featured-grid-4">
+                        {featuredProducts.slice(0, 4).map((product, index) => {
+                            const rankEmoji = ['🥇', '🥈', '🥉', '⭐'][index];
+                            const rankLabel = ['Best Seller', '2nd Popular', '3rd Popular', 'Fan Favourite'][index];
+                            return (
+                                <div key={product.id} className={`featured-product-card-v2 rank-${index + 1}`}>
+                                    <div className="featured-card__image-wrap">
+                                        <img
+                                            src={product.image || "https://placehold.co/300x200?text=No+Image"}
+                                            alt={product.name}
+                                            onError={e => { e.target.src = "https://placehold.co/300x200?text=No+Image"; }}
+                                        />
+                                        <span className="featured-card__rank-badge" style={{display:'none'}}>{rankEmoji}</span>
+                                        {index === 0 && <span className="featured-card__trending-pill">🔥 Trending</span>}
+                                        <span className={`featured-card__category category-badge ${product.category?.toLowerCase() === 'non-veg' ? 'non-veg' : 'veg'}`}>
+                                            {product.category === 'NON-VEG' ? 'Non-Veg' : 'Veg'}
+                                        </span>
+                                    </div>
+                                    <div className="featured-card__body">
+                                        <span className="featured-card__rank-label">{rankLabel}</span>
+                                        <h3 className="featured-card__name">{product.name}</h3>
+                                        {product.description && (
+                                            <p className="featured-card__desc">{product.description.slice(0, 60)}{product.description.length > 60 ? '...' : ''}</p>
+                                        )}
+                                        <div className="featured-card__footer">
+                                            <span className="featured-card__price">${Number(product.price).toFixed(2)}</span>
+                                            <button
+                                                onClick={() => window.location.href = '/products'}
+                                                className="featured-card__btn"
+                                            >
+                                                Order Now →
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
-                    {featuredProducts.length === 0 && <p className="no-products-msg">No trending products available yet.</p>}
+                    {featuredProducts.length === 0 && (
+                        <p className="no-products-msg">No trending products yet — start ordering!</p>
+                    )}
                 </section>
 
             </div>

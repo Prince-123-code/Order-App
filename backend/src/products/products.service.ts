@@ -17,6 +17,7 @@ export class ProductsService {
     if (search) {
       where.name = {
         contains: search,
+        mode: 'insensitive',
       };
     }
     if (category && category !== 'ALL') {
@@ -77,11 +78,11 @@ export class ProductsService {
       _sum: { quantity: true },
       where: { order: { status: 'DELIVERED' } },
       orderBy: { _sum: { quantity: 'desc' } },
-      take: 3,
+      take: 4,
     });
 
     const ids = topSales.map((s) => s.productId);
-    if (ids.length === 0) return this.prisma.product.findMany({ where: { deleted: false }, take: 3, orderBy: { id: 'desc' } });
+    if (ids.length === 0) return this.prisma.product.findMany({ where: { deleted: false }, take: 4, orderBy: { id: 'desc' } });
 
     const products = await this.prisma.product.findMany({
       where: { id: { in: ids }, deleted: false },
